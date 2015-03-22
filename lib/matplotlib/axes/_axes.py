@@ -4230,6 +4230,46 @@ class Axes(_AxesBase):
         self.add_collection(q, autolim=True)
         self.autoscale_view()
         return q
+
+    @docstring.dedent_interpd
+    def quiver_easy(self, head_size=None, ascale=None, pinch=None, aspect=None, *args, **kw):
+        """
+        Create a quiver using specific parameters to modify head appearance, in addition to
+        standard Quiver parameters. 
+
+        Call signature::
+            quiver_easy(head_size, ascale, pinch, aspect, *args, **kw)
+
+        Parameters
+        ----------
+        head_size: scalar, optional, default : None
+            Fixed size of arrow head.
+
+        ascale: scalar, optional, default : None
+            Changes ratio between head size and the arrow shaft
+
+        pinch: scalar, optional, default: None
+            Changes the 'pinch' of the arrow head. A value less than 1 will
+            result in an indented tail. A value greater than 1 will result in
+            a diamond shaped arrow. 
+
+        aspect: scalar, optional, default : None
+            Changes relative width of the arrow compared to the arrow length.
+            A value less than 1 will result in a 'pointier' aspect, whereas a
+            value greater than 1 will result in a 'broader' aspect. 
+            
+        """
+
+        width = .0005 * ascale
+        head = head_size / ascale
+        head_axis_length = pinch * head
+        head_width = head * aspect
+
+        q = self.quiver(*args, headaxislength=head_axis_length, 
+        headwidth=head_width, headlength=head, width=width, **kw)
+
+        return q
+
     quiver.__doc__ = mquiver.Quiver.quiver_doc
 
     def stackplot(self, x, *args, **kwargs):

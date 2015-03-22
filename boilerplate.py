@@ -133,6 +133,7 @@ def boilerplate_gen():
         'psd',
         'quiver',
         'quiverkey',
+        'quiver_easy',
         'scatter',
         'semilogx',
         'semilogy',

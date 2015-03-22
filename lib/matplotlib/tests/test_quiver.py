@@ -17,6 +17,19 @@ def draw_quiver(ax, **kw):
     Q = ax.quiver(U, V, **kw)
     return Q
 
+def draw_quiver_easy(ax, **kw):
+    X, Y = np.meshgrid(np.arange(0, 2 * np.pi, 1),
+                       np.arange(0, 2 * np.pi, 1))
+    U = np.cos(X)
+    V = np.sin(Y)
+
+    head_size = 50
+    ascale = .2
+    pinch = .6
+    aspect = .5
+
+    Q = ax.quiver_easy(head_size, ascale, pinch, aspect, U, V, **kw)
+    return Q
 
 @cleanup
 def test_quiver_memory_leak():
@@ -82,6 +95,19 @@ def test_quiver_single():
 
     ax.quiver([1], [1], [2], [2])
 
+@image_comparison(baseline_images=['quiver_easy_test_image'],
+                  extensions=['png'], remove_text=True)
+def test_quiver_easy():
+    fig, ax = plt.subplots()
+
+    Q = draw_quiver_easy(ax)
+
+    qk = ax.quiverkey(Q, 0.5, 0.95, 2,
+                      r'$2\, \mathrm{m}\, \mathrm{s}^{-1}$',
+                      coordinates='figure',
+                      labelpos='W',
+                      fontproperties={'weight': 'bold',
+                                      'size': 'large'})
 
 @cleanup
 def test_quiver_copy():
