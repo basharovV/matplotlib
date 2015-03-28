@@ -4232,10 +4232,11 @@ class Axes(_AxesBase):
         return q
 
     @docstring.dedent_interpd
-    def quiver_easy(self, head_size=None, ascale=None, pinch=None, aspect=None, *args, **kw):
+    def quiver_easy(self, head_size=None, ascale=None,
+                    pinch=None, aspect=None, *args, **kw):
         """
-        Create a quiver using specific parameters to modify head appearance, in addition to
-        standard Quiver parameters. 
+        Create a quiver using specific parameters to modify head
+        appearance, in addition to standard Quiver parameters.
 
         Call signature::
             quiver_easy(head_size, ascale, pinch, aspect, *args, **kw)
@@ -4251,13 +4252,13 @@ class Axes(_AxesBase):
         pinch: scalar, optional, default: None
             Changes the 'pinch' of the arrow head. A value less than 1 will
             result in an indented tail. A value greater than 1 will result in
-            a diamond shaped arrow. 
+            a diamond shaped arrow.
 
         aspect: scalar, optional, default : None
             Changes relative width of the arrow compared to the arrow length.
             A value less than 1 will result in a 'pointier' aspect, whereas a
-            value greater than 1 will result in a 'broader' aspect. 
-            
+            value greater than 1 will result in a 'broader' aspect.
+
         """
 
         width = .0005 * ascale
@@ -4265,8 +4266,9 @@ class Axes(_AxesBase):
         head_axis_length = pinch * head
         head_width = head * aspect
 
-        q = self.quiver(*args, headaxislength=head_axis_length, 
-        headwidth=head_width, headlength=head, width=width, **kw)
+        q = self.quiver(*args, headaxislength=head_axis_length,
+                        headwidth=head_width, headlength=head,
+                        width=width, **kw)
 
         return q
 
