@@ -3886,9 +3886,10 @@ class Axes(_AxesBase):
         if extent is not None:
             xmin, xmax, ymin, ymax = extent
         else:
-            xmin, xmax = (np.amin(x), np.amax(x)) if len(x) else (0, 1)
-            ymin, ymax = (np.amin(y), np.amax(y)) if len(y) else (0, 1)
-
+            xmin = np.amin(x)
+            xmax = np.amax(x)
+            ymin = np.amin(y)
+            ymax = np.amax(y)
             # to avoid issues with singular data, expand the min/max pairs
             xmin, xmax = mtrans.nonsingular(xmin, xmax, expander=0.1)
             ymin, ymax = mtrans.nonsingular(ymin, ymax, expander=0.1)
@@ -4245,7 +4246,7 @@ class Axes(_AxesBase):
         headsize: scalar, optional, default : None
             Fixed size of arrow head.
 
-        ascale: scalar, optional, default : None
+        arrowscale: scalar, optional, default : None
             Changes ratio between head size and the arrow shaft
 
         pinch: scalar, optional, default: None
@@ -5721,14 +5722,12 @@ class Axes(_AxesBase):
 
         # basic input validation
         flat = np.ravel(x)
-
-        input_empty = len(flat) == 0
+        if len(flat) == 0:
+            raise ValueError("x must have at least one data point")
 
         # Massage 'x' for processing.
         # NOTE: Be sure any changes here is also done below to 'weights'
-        if input_empty:
-            x = np.array([[]])
-        elif isinstance(x, np.ndarray) or not iterable(x[0]):
+        if isinstance(x, np.ndarray) or not iterable(x[0]):
             # TODO: support masked arrays;
             x = np.asarray(x)
             if x.ndim == 2:
@@ -5783,7 +5782,7 @@ class Axes(_AxesBase):
         # If bins are not specified either explicitly or via range,
         # we need to figure out the range required for all datasets,
         # and supply that to np.histogram.
-        if not binsgiven and not input_empty:
+        if not binsgiven:
             xmin = np.inf
             xmax = -np.inf
             for xi in x:
@@ -5988,18 +5987,17 @@ class Axes(_AxesBase):
                     if np.sum(m) > 0:  # make sure there are counts
                         xmin = np.amin(m[m != 0])
                         # filter out the 0 height bins
-                xmin = max(xmin*0.9, minimum) if not input_empty else minimum
+                xmin = max(xmin*0.9, minimum)
                 xmin = min(xmin0, xmin)
                 self.dataLim.intervalx = (xmin, xmax)
             elif orientation == 'vertical':
                 ymin0 = max(_saved_bounds[1]*0.9, minimum)
                 ymax = self.dataLim.intervaly[1]
-
                 for m in n:
                     if np.sum(m) > 0:  # make sure there are counts
                         ymin = np.amin(m[m != 0])
                         # filter out the 0 height bins
-                ymin = max(ymin*0.9, minimum) if not input_empty else minimum
+                ymin = max(ymin*0.9, minimum)
                 ymin = min(ymin0, ymin)
                 self.dataLim.intervaly = (ymin, ymax)
 
