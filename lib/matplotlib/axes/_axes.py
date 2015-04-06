@@ -4232,18 +4232,17 @@ class Axes(_AxesBase):
         return q
 
     @docstring.dedent_interpd
-    def quiver_easy(self, head_size=None, ascale=None,
-                    pinch=None, aspect=None, *args, **kw):
+    def quiver_shape(self, *args, **kw):
         """
         Create a quiver using specific parameters to modify head
         appearance, in addition to standard Quiver parameters.
 
         Call signature::
-            quiver_easy(head_size, ascale, pinch, aspect, *args, **kw)
+            quiver_shape(*args, **kw)
 
-        Parameters
+        Additional Keyword Arguments
         ----------
-        head_size: scalar, optional, default : None
+        headsize: scalar, optional, default : None
             Fixed size of arrow head.
 
         ascale: scalar, optional, default : None
@@ -4261,13 +4260,42 @@ class Axes(_AxesBase):
 
         """
 
-        width = .0005 * ascale
-        head = head_size / ascale
-        head_axis_length = pinch * head
-        head_width = head * aspect
+        arrow_scale = None
+        head_size = None
+        pinch = None
+        aspect = None
+
+        if 'arrowscale' in kw:
+            arrow_scale = kw.pop('arrowscale')
+        if 'headsize' in kw:
+            head_size = kw.pop('headsize')
+        if 'pinch' in kw:
+            pinch = kw.pop('pinch')
+        if 'aspect' in kw:
+            aspect = kw.pop('aspect')
+
+        head_length = 5
+        head_width = 3
+        width = 0.005
+        head_axis_length = 4.5
+
+        if arrow_scale is not None:
+            if 'headaxislength' in kw:
+                kw.pop('headaxislength')
+            if 'headwidth' in kw:
+                kw.pop('headwidth')
+            if 'width' in kw:
+                kw.pop('width')
+            width = .0005 * arrow_scale
+            if head_size is not None:
+                head_length = head_size / arrow_scale
+                if pinch is not None:
+                    head_axis_length = pinch * head_length
+                if aspect is not None:
+                    head_width = head_length * aspect
 
         q = self.quiver(*args, headaxislength=head_axis_length,
-                        headwidth=head_width, headlength=head,
+                        headwidth=head_width, headlength=head_length,
                         width=width, **kw)
 
         return q
